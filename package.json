@@ -1,0 +1,38 @@
+{
+  "name": "logtunnel",
+  "version": "1.0.0",
+  "description": "CLI tool that allows you to format, filter and search your log output",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "lab -v -m 4000 -I require -a @hapi/code"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabriel-pinheiro/logtunnel.git"
+  },
+  "keywords": [
+    "log",
+    "cli",
+    "grep",
+    "format",
+    "filter"
+  ],
+  "author": "Gabriel Pinheiro <gabrielctpinheiro@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/gabriel-pinheiro/logtunnel/issues"
+  },
+  "homepage": "https://github.com/gabriel-pinheiro/logtunnel#readme",
+  "devDependencies": {
+    "@hapi/code": "^8.0.3",
+    "@hapi/lab": "^24.3.2",
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "@hapi/bossy": "^5.1.0",
+    "@hapi/hoek": "^9.2.0",
+    "@hapi/podium": "^4.1.3",
+    "debug": "^4.3.2",
+    "semver": "^7.3.5"
+  }
+}
