@@ -33,4 +33,11 @@ module.exports.definition = {
         alias: 'output',
         type: 'string',
     },
+    F: {
+        description: 'Show only logs that match the field filter',
+        alias: 'field',
+        type: 'string',
+        multiple: true,
+        default: [],
+    },
 };

@@ -15,8 +15,9 @@ const ignore = require('./transformers/ignore');
 const parseJson = require('./transformers/parse-json');
 const parseLogfmt = require('./transformers/parse-logfmt');
 const parseRegex = require('./transformers/parse-regex');
-const formatJson = require('./transformers/format-json');
+const field = require('./transformers/field');
 const output = require('./transformers/output');
+const formatJson = require('./transformers/format-json');
 
 const debug = require('debug')('logtunnel:main');
 
@@ -45,14 +46,20 @@ function run() {
         process.exit(0);
     }
 
-    const pipeline = new LogPipeline([
-        ...args.filter.map(filter),
-        ...args.ignore.map(ignore),
-        buildParser(args.parser),
-        buildFormatter(args.output),
-        formatJson(),
-    ]);
-    stdin.on('log-line', l => pipeline.onLogLine(l));
+    try {
+        const pipeline = new LogPipeline([
+            ...args.filter.map(filter),
+            ...args.ignore.map(ignore),
+            buildParser(args.parser),
+            ...args.field.map(field),
+            args.output ? output(args.output) : null,
+            formatJson(),
+        ]);
+        stdin.on('log-line', l => pipeline.onLogLine(l));
+    } catch(e) {
+        console.error('Error:', e.message);
+        process.exit(1);
+    }
 }
 
 function buildArgs() {
@@ -81,14 +88,6 @@ function buildParser(parser) {
     }
 
     return parseRegex(parser);
-}
-
-function buildFormatter(format) {
-    if(!format) {
-        return null;
-    }
-
-    return output(format);
 }
 
 run();
