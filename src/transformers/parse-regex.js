@@ -1,5 +1,5 @@
 module.exports = regexStr => {
-    const regex = new RegExp(regexStr, 'g');
+    const regex = new RegExp(regexStr, 'i');
 
     return line => {
         try {
