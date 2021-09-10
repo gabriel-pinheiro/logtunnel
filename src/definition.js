@@ -14,12 +14,14 @@ module.exports.definition = {
         alias: 'filter',
         type: 'string',
         multiple: true,
+        default: [],
     },
     i: {
         description: 'Ignore logs that match the specified regex',
         alias: 'ignore',
         type: 'string',
         multiple: true,
+        default: [],
     },
     p: {
         description: 'Parses the input using this modifier. Allowed: json, logfmt or <regex>',

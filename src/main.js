@@ -10,6 +10,10 @@ const { definition } = require('./definition');
 const { stdin } = require('./stdin');
 const { LogPipeline } = require('./pipeline');
 
+const filter = require('./transformers/filter');
+const ignore = require('./transformers/ignore');
+const formatJson = require('./transformers/format-json');
+
 const debug = require('debug')('logtunnel:main');
 
 const examples = [
@@ -37,7 +41,11 @@ function run() {
         process.exit(0);
     }
 
-    const pipeline = new LogPipeline([]);
+    const pipeline = new LogPipeline([
+        ...args.filter.map(filter),
+        ...args.ignore.map(ignore),
+        formatJson(),
+    ]);
     stdin.on('log-line', l => pipeline.onLogLine(l));
 }
 
