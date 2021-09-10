@@ -17,6 +17,7 @@ const ignore = require('./transformers/ignore');
 const parseJson = require('./transformers/parse-json');
 const parseLogfmt = require('./transformers/parse-logfmt');
 const parseRegex = require('./transformers/parse-regex');
+const parseTable = require('./transformers/parse-table');
 const field = require('./transformers/field');
 const outputMustache = require('./transformers/output-mustache');
 const outputOriginal = require('./transformers/output-original');
@@ -93,6 +94,9 @@ function buildParser(parser) {
     }
     if(parser.toLowerCase() === 'logfmt') {
         return parseLogfmt();
+    }
+    if(parser.toLowerCase() === 'table') {
+        return parseTable();
     }
 
     return parseRegex(parser);

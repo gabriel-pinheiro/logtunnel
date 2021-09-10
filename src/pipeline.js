@@ -1,22 +1,24 @@
 class LogPipeline {
     constructor(transformers) {
         this.transformers = transformers.filter(t => t !== null);
+        this.firstLine = null;
     }
 
     onLogLine(line) {
         try {
-            this._onLogLine(line);
+            this._logLine(line);
+            this._updateFirstLine(line);
         } catch (e) {
             console.error('Error:', e.message);
             process.exit(1);
         }
     }
 
-    _onLogLine(line) {
+    _logLine(line) {
         let output = line;
 
         for (let transformer of this.transformers) {
-            const result = transformer(output, line);
+            const result = transformer(output, line, this);
 
             // Transformer accepted the line
             if(result === true) {
@@ -33,6 +35,14 @@ class LogPipeline {
         }
 
         process.stdout.write(output + '\n');
+    }
+
+    _updateFirstLine(line) {
+        if (this.firstLine) {
+            return;
+        }
+
+        this.firstLine = line;
     }
 }
 
