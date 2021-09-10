@@ -24,10 +24,10 @@ const debug = require('debug')('logtunnel:main');
 
 const examples = [
     `tail -f logs.txt | lt -f 'error'`,
-    `tail -f logs.txt | lt -f 'error' -f 'nullpointer'`,
+    `tail -f logs.txt | lt -f 'error' -i 'nullpointer'`,
     `tail -f logs.txt | lt -i 'debug'`,
     `tail -f logs.txt | lt -p json -F 'status >= 500'`,
-    `tail -f logs.txt | la -p json -F 'delay > 1000' -o '[{{severity}}] {{log}}'`
+    `tail -f logs.txt | lt -p json -F 'delay > 1000' -o '[{{severity}}] {{log}}'`
 ];
 const usage = Bossy.usage(definition, 'lt [options]')
         + '\n\nExamples:\n\n'
