@@ -1,4 +1,5 @@
 const Mustache = require('mustache');
+Mustache.escape = text => text;
 
 module.exports = format => line => {
     if(typeof line !== 'object') {
