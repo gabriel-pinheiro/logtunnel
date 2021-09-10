@@ -18,7 +18,8 @@ const parseJson = require('./transformers/parse-json');
 const parseLogfmt = require('./transformers/parse-logfmt');
 const parseRegex = require('./transformers/parse-regex');
 const field = require('./transformers/field');
-const output = require('./transformers/output');
+const outputMustache = require('./transformers/output-mustache');
+const outputOriginal = require('./transformers/output-original');
 const formatJson = require('./transformers/format-json');
 
 const debug = require('debug')('logtunnel:main');
@@ -59,7 +60,7 @@ function run() {
             ...args.ignore.map(ignore),
             buildParser(args.parser),
             ...args.field.map(field),
-            args.output ? output(args.output) : null,
+            buildOutput(args.output),
             formatJson(),
         ]);
         stdin.on('log-line', l => pipeline.onLogLine(l));
@@ -95,6 +96,18 @@ function buildParser(parser) {
     }
 
     return parseRegex(parser);
+}
+
+function buildOutput(output) {
+    if(!output) {
+        return null;
+    }
+
+    if(output.toLowerCase() === 'original') {
+        return outputOriginal();
+    }
+
+    return outputMustache(output);
 }
 
 run();

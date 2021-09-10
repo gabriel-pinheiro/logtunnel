@@ -16,7 +16,7 @@ class LogPipeline {
         let output = line;
 
         for (let transformer of this.transformers) {
-            const result = transformer(output);
+            const result = transformer(output, line);
 
             // Transformer accepted the line
             if(result === true) {
