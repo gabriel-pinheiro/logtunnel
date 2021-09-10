@@ -1,8 +1,11 @@
 {
   "name": "logtunnel",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "CLI tool that allows you to format, filter and search your log output",
   "main": "src/main.js",
+  "bin": {
+    "lt": "src/main.js"
+  },
   "scripts": {
     "test": "lab -v -m 4000 -I require -a @hapi/code"
   },
