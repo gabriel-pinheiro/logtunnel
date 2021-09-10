@@ -15,6 +15,7 @@ const ignore = require('./transformers/ignore');
 const parseJson = require('./transformers/parse-json');
 const parseLogfmt = require('./transformers/parse-logfmt');
 const formatJson = require('./transformers/format-json');
+const output = require('./transformers/output');
 
 const debug = require('debug')('logtunnel:main');
 
@@ -43,18 +44,11 @@ function run() {
         process.exit(0);
     }
 
-    const parser = [];
-    if(args.parser?.toLowerCase() === 'json') {
-        parser.push(parseJson());
-    }
-    if(args.parser?.toLowerCase() === 'logfmt') {
-        parser.push(parseLogfmt());
-    }
-
     const pipeline = new LogPipeline([
         ...args.filter.map(filter),
         ...args.ignore.map(ignore),
-        ...parser,
+        buildParser(args.parser),
+        buildFormatter(args.output),
         formatJson(),
     ]);
     stdin.on('log-line', l => pipeline.onLogLine(l));
@@ -71,6 +65,25 @@ function buildArgs() {
     }
 
     return args;
+}
+
+function buildParser(parser) {
+    if(parser?.toLowerCase() === 'json') {
+        return parseJson();
+    }
+    if(parser?.toLowerCase() === 'logfmt') {
+        return parseLogfmt();
+    }
+
+    return null;
+}
+
+function buildFormatter(format) {
+    if(!format) {
+        return null;
+    }
+
+    return output(format);
 }
 
 run();

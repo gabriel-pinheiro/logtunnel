@@ -1,9 +1,18 @@
 class LogPipeline {
     constructor(transformers) {
-        this.transformers = transformers;
+        this.transformers = transformers.filter(t => t !== null);
     }
 
     onLogLine(line) {
+        try {
+            this._onLogLine(line);
+        } catch (e) {
+            console.error('Error:', e.message);
+            process.exit(1);
+        }
+    }
+
+    _onLogLine(line) {
         let output = line;
 
         for (let transformer of this.transformers) {
