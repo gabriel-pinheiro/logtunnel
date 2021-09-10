@@ -1,0 +1,5 @@
+[INFO in 120ms] Registered user Alice
+[INFO in  70ms] Bob logged out
+[WARN in 710ms] Alice tried to purchase with insufficient funds
+[INFO in 230ms] Alice added funds to their account
+[INFO in 150ms] Claire logged in

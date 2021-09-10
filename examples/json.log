@@ -1,0 +1,5 @@
+{"log": "Registered user Alice", "lvl": "info", "delay": 120}
+{"log": "Bob logged out", "lvl": "info", "delay": 70}
+{"log": "Alice tried to purchase with insufficient funds", "lvl": "warn", "delay": 710}
+{"log": "Alice added funds to their account", "lvl": "info", "delay": 230}
+{"log": "Claire logged in", "lvl": "info", "delay": 150}
