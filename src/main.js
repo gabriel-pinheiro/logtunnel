@@ -5,6 +5,7 @@ if(!semver.satisfies(process.version, '>=12')) {
     process.exit(1);
 }
 
+require('colors');
 const Bossy = require('@hapi/bossy');
 const pkg = require('../package.json');
 const { definition } = require('./definition');
@@ -22,17 +23,20 @@ const formatJson = require('./transformers/format-json');
 
 const debug = require('debug')('logtunnel:main');
 
-const examples = [
-    `tail -f logs.txt | lt err`,
-    `tail -f logs.txt | lt -f 'error' -f 'client'`,
-    `tail -f logs.txt | lt -f 'error' -i 'nullpointer'`,
-    `tail -f logs.txt | lt -i 'debug'`,
-    `tail -f logs.txt | lt -p json -F 'status >= 500'`,
-    `tail -f logs.txt | lt -p json -F 'delay > 1000' -o '[{{severity}}] {{log}}'`
-];
-const usage = Bossy.usage(definition, 'lt [options]\n   Or: lt <filter>')
-        + '\n\nExamples:\n\n'
-        + examples.map(e => '  ' + e).join('\n');
+const examples = `
+
+Examples:
+  curl -s https://cdn.codetunnel.net/lt/text.log   | lt alice                          ${'Find logs that contain "alice"'.gray}
+  curl -s https://cdn.codetunnel.net/lt/text.log   | lt -f alice -f purchase           ${'Find logs that contain "alice" and "purchase"'.gray}
+  curl -s https://cdn.codetunnel.net/lt/text.log   | lt -f alice -i info               ${'Find logs that contain "alice" and ignore the ones that contain "info"'.gray}
+  curl -s https://cdn.codetunnel.net/lt/json.log   | lt -p json -o '[{{lvl}}] {{log}}' ${'Parse logs as JSON and output them with that template'.gray}
+  curl -s https://cdn.codetunnel.net/lt/json.log   | lt -p json -o '[{{lvl}}] {{log}}' -f alice                        ${'Parse logs as JSON, apply template and find the ones containing "alice"'.gray}
+  curl -s https://cdn.codetunnel.net/lt/json.log   | lt -p json -o '[{{lvl}} in {{delay}}ms] {{log}}' -F 'delay > 200' ${'Parse logs as JSON, apply template and show the ones with "delay > 200"'.gray}
+  curl -s https://cdn.codetunnel.net/lt/json.log   | lt -p json -o '[{{lvl}}] {{log}}' -F 'log ~ "Alice"'              ${'Parse logs as JSON, apply template and show the ones with with "log" containing "Alice"'.gray}
+  curl -s https://cdn.codetunnel.net/lt/logfmt.log | lt -p logfmt -o '{{log}}' -F 'delay > 200'                        ${'Parse logs as logfmt, apply template and show the ones with "delay > 200"'.gray}
+  curl -s https://cdn.codetunnel.net/lt/text.log   | lt -p '\\[(?<lvl>\\S*) in\\s*(?<delay>\\d*)ms\\] (?<log>.*)' -o '{{log}}' -F 'delay > 200' ${'Parse logs with regex, apply template and show the ones with "delay > 200"'.gray}
+`;
+const usage = Bossy.usage(definition, 'lt [options]\n   Or: lt <filter>') + examples.trimEnd();
 
 function run() {
     debug('building args');
