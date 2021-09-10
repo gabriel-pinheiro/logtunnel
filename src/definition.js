@@ -25,7 +25,7 @@ module.exports.definition = {
     },
     p: {
         description: 'Parses the input using this modifier. Allowed: json, logfmt or <regex>',
-        alias: 'parse-input',
+        alias: 'parser',
         type: 'string',
     },
     o: {

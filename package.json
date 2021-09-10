@@ -33,6 +33,7 @@
     "@hapi/hoek": "^9.2.0",
     "@hapi/podium": "^4.1.3",
     "debug": "^4.3.2",
+    "logfmt": "^1.3.2",
     "semver": "^7.3.5"
   }
 }
