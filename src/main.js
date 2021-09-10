@@ -23,13 +23,14 @@ const formatJson = require('./transformers/format-json');
 const debug = require('debug')('logtunnel:main');
 
 const examples = [
-    `tail -f logs.txt | lt -f 'error'`,
+    `tail -f logs.txt | lt err`,
+    `tail -f logs.txt | lt -f 'error' -f 'client'`,
     `tail -f logs.txt | lt -f 'error' -i 'nullpointer'`,
     `tail -f logs.txt | lt -i 'debug'`,
     `tail -f logs.txt | lt -p json -F 'status >= 500'`,
     `tail -f logs.txt | lt -p json -F 'delay > 1000' -o '[{{severity}}] {{log}}'`
 ];
-const usage = Bossy.usage(definition, 'lt [options]')
+const usage = Bossy.usage(definition, 'lt [options]\n   Or: lt <filter>')
         + '\n\nExamples:\n\n'
         + examples.map(e => '  ' + e).join('\n');
 
@@ -49,6 +50,7 @@ function run() {
 
     try {
         const pipeline = new LogPipeline([
+            args._ ? filter(args._) : null,
             ...args.filter.map(filter),
             ...args.ignore.map(ignore),
             buildParser(args.parser),
