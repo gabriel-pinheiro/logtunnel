@@ -1,6 +1,6 @@
 {
   "name": "logtunnel",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "CLI tool that allows you to format, filter and search your log output",
   "main": "src/main.js",
   "bin": {
