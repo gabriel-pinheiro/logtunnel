@@ -5,7 +5,7 @@ module.exports = () => line => {
         return line;
     }
 
-    return util.inspect(line, {
+    return util.inspect({ ...line }, {
         colors: true,
         depth: null,
     });

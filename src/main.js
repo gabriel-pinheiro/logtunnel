@@ -14,6 +14,7 @@ const filter = require('./transformers/filter');
 const ignore = require('./transformers/ignore');
 const parseJson = require('./transformers/parse-json');
 const parseLogfmt = require('./transformers/parse-logfmt');
+const parseRegex = require('./transformers/parse-regex');
 const formatJson = require('./transformers/format-json');
 const output = require('./transformers/output');
 
@@ -68,14 +69,18 @@ function buildArgs() {
 }
 
 function buildParser(parser) {
-    if(parser?.toLowerCase() === 'json') {
+    if(!parser) {
+        return null;
+    }
+
+    if(parser.toLowerCase() === 'json') {
         return parseJson();
     }
-    if(parser?.toLowerCase() === 'logfmt') {
+    if(parser.toLowerCase() === 'logfmt') {
         return parseLogfmt();
     }
 
-    return null;
+    return parseRegex(parser);
 }
 
 function buildFormatter(format) {
