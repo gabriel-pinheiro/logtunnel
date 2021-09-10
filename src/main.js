@@ -43,7 +43,7 @@ function run() {
         process.exit(0);
     }
 
-    if(args.help) {
+    if(args.help || process.argv.length === 2) {
         console.log(usage);
         process.exit(0);
     }
