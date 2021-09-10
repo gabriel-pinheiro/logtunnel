@@ -1,7 +1,8 @@
 class LogPipeline {
-    constructor(transformers) {
+    constructor(transformers, args) {
         this.transformers = transformers.filter(t => t !== null);
         this.firstLine = null;
+        this.args = args;
     }
 
     onLogLine(line) {
@@ -43,6 +44,9 @@ class LogPipeline {
         }
 
         this.firstLine = line;
+        if(this.args.headers) {
+            process.stdout.write(this.firstLine + '\n');
+        }
     }
 }
 

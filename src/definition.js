@@ -40,4 +40,9 @@ module.exports.definition = {
         multiple: true,
         default: [],
     },
+    H: {
+        description: 'Always log the first line',
+        alias: 'headers',
+        type: 'boolean',
+    },
 };

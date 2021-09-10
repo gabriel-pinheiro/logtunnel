@@ -63,7 +63,7 @@ function run() {
             ...args.field.map(field),
             buildOutput(args.output),
             formatJson(),
-        ]);
+        ], args);
         stdin.on('log-line', l => pipeline.onLogLine(l));
     } catch(e) {
         console.error('Error:', e.message);
