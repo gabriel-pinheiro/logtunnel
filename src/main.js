@@ -9,7 +9,7 @@ require('colors');
 const Bossy = require('@hapi/bossy');
 const pkg = require('../package.json');
 const { definition, usage } = require('./definition');
-const { stdin } = require('./stdin');
+const { logSource } = require('./log-source');
 const { LogPipeline } = require('./pipeline');
 
 const filter = require('./transformers/filter');
@@ -46,7 +46,7 @@ function run() {
         ], args);
 
         debug('registering stdin');
-        stdin.on('log-line', l => pipeline.onLogLine(l));
+        logSource(process.stdin).on('log-line', l => pipeline.onLogLine(l));
     } catch(e) {
         console.error('Error:', e.message);
         process.exit(1);
