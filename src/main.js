@@ -55,6 +55,7 @@ function run() {
     }
 
     try {
+        debug('building pipeline');
         const pipeline = new LogPipeline([
             args._ ? filter(args._) : null,
             ...args.filter.map(filter),
@@ -64,6 +65,8 @@ function run() {
             buildOutput(args.output),
             formatJson(),
         ], args);
+
+        debug('registering stdin');
         stdin.on('log-line', l => pipeline.onLogLine(l));
     } catch(e) {
         console.error('Error:', e.message);

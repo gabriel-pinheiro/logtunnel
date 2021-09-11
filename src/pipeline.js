@@ -1,3 +1,5 @@
+const debug = require('debug')('logtunnel:pipeline');
+
 class LogPipeline {
     constructor(transformers, args) {
         this.transformers = transformers.filter(t => t !== null);
@@ -7,6 +9,7 @@ class LogPipeline {
 
     onLogLine(line) {
         try {
+            debug('got line: ' + line)
             this._logLine(line);
             this._updateFirstLine(line);
         } catch (e) {
@@ -23,16 +26,19 @@ class LogPipeline {
 
             // Transformer accepted the line
             if(result === true) {
+                debug('transformer accepted line');
                 continue;
             }
 
             // Transformer rejected the line
             if(result === false) {
+                debug('transformer rejected line');
                 return;
             }
 
             // Transformer modified the line
             output = result;
+            debug('line transformed: ' + JSON.stringify(output)); 
         }
 
         process.stdout.write(output + '\n');
