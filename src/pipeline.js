@@ -21,8 +21,11 @@ class LogPipeline {
             this._logLine(line);
             this._updateFirstLine(line);
         } catch (e) {
+            // Covering this would kill the process
+            /* $lab:coverage:off$ */
             console.error('Error:', e.message);
             process.exit(1);
+            /* $lab:coverage:on$ */
         }
     }
 
