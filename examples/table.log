@@ -1,0 +1,11 @@
+NAMESPACE     NAME                                  READY   STATUS    RESTARTS   AGE
+default       api-786d7b5865-zx6d9                  1/2     Running   0          3h
+default       ui-67f86fd9bd-5kqbh                   1/1     Running   0          3h
+infra         postgres-postgresql-0                 1/1     Running   0          1d
+infra         rabbitmq-0                            1/1     Running   3          1d
+infra         redis-master-0                        0/1     Running   0          1d
+kube-system   cilium-65rcq                          1/1     Running   2          1d
+kube-system   cilium-operator-66bfdbd67f-vrtr7      1/1     Running   0          1d
+kube-system   coredns-57877dc48d-nkpdn              1/1     Running   0          1d
+kube-system   kube-proxy-v25mz                      1/1     Running   0          1d
+kube-system   metrics-server-79d899f984-d7bjq       1/1     Running   1          1d

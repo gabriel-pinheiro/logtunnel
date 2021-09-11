@@ -8,7 +8,7 @@ if(!semver.satisfies(process.version, '>=12')) {
 require('colors');
 const Bossy = require('@hapi/bossy');
 const pkg = require('../package.json');
-const { definition } = require('./definition');
+const { definition, usage } = require('./definition');
 const { stdin } = require('./stdin');
 const { LogPipeline } = require('./pipeline');
 
@@ -19,21 +19,6 @@ const field = require('./transformers/field');
 const output = require('./transformers/output');
 
 const debug = require('debug')('logtunnel:main');
-
-const examples = `
-
-Examples:
-  curl -s https://cdn.codetunnel.net/lt/text.log   | lt alice                          ${'Find logs that contain "alice"'.gray}
-  curl -s https://cdn.codetunnel.net/lt/text.log   | lt -f alice -f purchase           ${'Find logs that contain "alice" and "purchase"'.gray}
-  curl -s https://cdn.codetunnel.net/lt/text.log   | lt -f alice -i info               ${'Find logs that contain "alice" and ignore the ones that contain "info"'.gray}
-  curl -s https://cdn.codetunnel.net/lt/json.log   | lt -p json -o '[{{lvl}}] {{log}}' ${'Parse logs as JSON and output them with that template'.gray}
-  curl -s https://cdn.codetunnel.net/lt/json.log   | lt -p json -o '[{{lvl}}] {{log}}' -f alice                        ${'Parse logs as JSON, apply template and find the ones containing "alice"'.gray}
-  curl -s https://cdn.codetunnel.net/lt/json.log   | lt -p json -o '[{{lvl}} in {{delay}}ms] {{log}}' -F 'delay > 200' ${'Parse logs as JSON, apply template and show the ones with "delay > 200"'.gray}
-  curl -s https://cdn.codetunnel.net/lt/json.log   | lt -p json -o '[{{lvl}}] {{log}}' -F 'log ~ "Alice"'              ${'Parse logs as JSON, apply template and show the ones with with "log" containing "Alice"'.gray}
-  curl -s https://cdn.codetunnel.net/lt/logfmt.log | lt -p logfmt -o '{{log}}' -F 'delay > 200'                        ${'Parse logs as logfmt, apply template and show the ones with "delay > 200"'.gray}
-  curl -s https://cdn.codetunnel.net/lt/text.log   | lt -p '\\[(?<lvl>\\S*) in\\s*(?<delay>\\d*)ms\\] (?<log>.*)' -o '{{log}}' -F 'delay > 200' ${'Parse logs with regex, apply template and show the ones with "delay > 200"'.gray}
-`;
-const usage = Bossy.usage(definition, 'lt [options]\n   Or: lt <filter>') + examples.trimEnd();
 
 function run() {
     debug('building args');
@@ -70,6 +55,7 @@ function run() {
 
 function buildArgs() {
     const args = Bossy.parse(definition);
+    const emptyArrFields = ['filter', 'ignore', 'field'];
 
     if (args instanceof Error) {
         console.error(args.message);
@@ -77,6 +63,12 @@ function buildArgs() {
 
         process.exit(1);
     }
+
+    emptyArrFields.forEach(field => {
+        if(!args[field]) {
+            args[field] = [];
+        }
+    });
 
     return args;
 }
