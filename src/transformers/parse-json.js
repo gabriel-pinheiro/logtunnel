@@ -1,6 +1,11 @@
 module.exports = () => line => {
     try {
-        return JSON.parse(line);
+        const obj = JSON.parse(line);
+        if(typeof obj !== 'object') {
+            return false;
+        }
+
+        return obj;
     } catch {
         return false;
     }

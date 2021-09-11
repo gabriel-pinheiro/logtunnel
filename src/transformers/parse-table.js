@@ -1,24 +1,26 @@
-let headers;
-
 function splitColumns(line) {
     return line.replace(/\s+/g, ' ').split(' ');
 }
 
-module.exports = () => (line, _original, pipeline) => {
-    if(!pipeline.firstLine) {
-        // Ignore first line, it's the headers
-        return false;
-    }
-    if(!headers) {
-        headers = splitColumns(pipeline.firstLine);
-    }
+module.exports = () => {
+    let headers;
 
-    const columns = splitColumns(line);
-    const obj = {};
+    return (line, _original, pipeline) => {
+        if(!pipeline.firstLine) {
+            // Ignore first line, it's the headers
+            return false;
+        }
+        if(!headers) {
+            headers = splitColumns(pipeline.firstLine);
+        }
 
-    headers.forEach((header, i) => {
-        obj[header] = columns[i];
-    });
+        const columns = splitColumns(line);
+        const obj = {};
 
-    return obj;
+        headers.forEach((header, i) => {
+            obj[header] = columns[i];
+        });
+
+        return obj;
+    };
 };
