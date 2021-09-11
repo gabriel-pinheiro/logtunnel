@@ -14,10 +14,7 @@ const { LogPipeline } = require('./pipeline');
 
 const filter = require('./transformers/filter');
 const ignore = require('./transformers/ignore');
-const parseJson = require('./transformers/parse-json');
-const parseLogfmt = require('./transformers/parse-logfmt');
-const parseRegex = require('./transformers/parse-regex');
-const parseTable = require('./transformers/parse-table');
+const parse = require('./transformers/parse');
 const field = require('./transformers/field');
 const output = require('./transformers/output');
 
@@ -58,7 +55,7 @@ function run() {
             args._ ? filter(args._) : null,
             ...args.filter.map(filter),
             ...args.ignore.map(ignore),
-            buildParser(args.parser),
+            parse(args.parser),
             ...args.field.map(field),
             output(args.output),
         ], args);
@@ -82,24 +79,6 @@ function buildArgs() {
     }
 
     return args;
-}
-
-function buildParser(parser) {
-    if(!parser) {
-        return null;
-    }
-
-    if(parser.toLowerCase() === 'json') {
-        return parseJson();
-    }
-    if(parser.toLowerCase() === 'logfmt') {
-        return parseLogfmt();
-    }
-    if(parser.toLowerCase() === 'table') {
-        return parseTable();
-    }
-
-    return parseRegex(parser);
 }
 
 run();
