@@ -6,10 +6,13 @@ function splitColumns(line) {
 
 module.exports = () => (line, _original, pipeline) => {
     if(!pipeline.firstLine) {
-        headers = splitColumns(line);
-        // Ignore first line, it's the header
+        // Ignore first line, it's the headers
         return false;
     }
+    if(!headers) {
+        headers = splitColumns(pipeline.firstLine);
+    }
+
     const columns = splitColumns(line);
     const obj = {};
 
