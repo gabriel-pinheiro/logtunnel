@@ -12,12 +12,6 @@ const { definition, usage } = require('./definition');
 const { logSource } = require('./log-source');
 const { LogPipeline } = require('./pipeline');
 
-const filter = require('./transformers/filter');
-const ignore = require('./transformers/ignore');
-const parse = require('./transformers/parse');
-const field = require('./transformers/field');
-const output = require('./transformers/output');
-
 const debug = require('debug')('logtunnel:main');
 
 function run() {
@@ -36,15 +30,7 @@ function run() {
 
     try {
         debug('building pipeline');
-        const pipeline = new LogPipeline([
-            args._ ? filter(args._) : null,
-            ...args.filter.map(filter),
-            ...args.ignore.map(ignore),
-            parse(args.parser),
-            ...args.field.map(field),
-            output(args.output),
-        ], args);
-
+        const pipeline = new LogPipeline(args, process.stdout);
         debug('registering stdin');
         logSource(process.stdin).on('log-line', l => pipeline.onLogLine(l));
     } catch(e) {

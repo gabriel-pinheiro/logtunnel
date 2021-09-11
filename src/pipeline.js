@@ -1,10 +1,18 @@
+'use strict';
 const debug = require('debug')('logtunnel:pipeline');
 
+const filter = require('./transformers/filter');
+const ignore = require('./transformers/ignore');
+const parse = require('./transformers/parse');
+const field = require('./transformers/field');
+const output = require('./transformers/output');
+
 class LogPipeline {
-    constructor(transformers, args) {
-        this.transformers = transformers.filter(t => t !== null);
+    constructor(args, stdout) {
         this.firstLine = null;
         this.args = args;
+        this.stdout = stdout;
+        this.transformers = this._buildTransformers().filter(t => t !== null);
     }
 
     onLogLine(line) {
@@ -41,7 +49,7 @@ class LogPipeline {
             debug('line transformed: ' + JSON.stringify(output)); 
         }
 
-        process.stdout.write(output + '\n');
+        this.stdout.write(output + '\n');
     }
 
     _updateFirstLine(line) {
@@ -51,8 +59,23 @@ class LogPipeline {
 
         this.firstLine = line;
         if(this.args.headers) {
-            process.stdout.write(this.firstLine + '\n');
+            this.stdout.write(this.firstLine + '\n');
         }
+    }
+
+    _buildTransformers() {
+        return [
+            // First of all, filter which lines to accept
+            this.args._ ? filter(this.args._) : null,
+            ...this.args.filter.map(filter),
+            ...this.args.ignore.map(ignore),
+            // Parse them...
+            parse(this.args.parser),
+            // ...and apply field filters
+            ...this.args.field.map(field),
+            // And finally format the output
+            output(this.args.output),
+        ];
     }
 }
 
