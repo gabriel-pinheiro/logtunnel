@@ -21,7 +21,7 @@ const parseTable = require('./transformers/parse-table');
 const field = require('./transformers/field');
 const outputMustache = require('./transformers/output-mustache');
 const outputOriginal = require('./transformers/output-original');
-const formatJson = require('./transformers/format-json');
+const outputUnset = require('./transformers/output-unset');
 
 const debug = require('debug')('logtunnel:main');
 
@@ -63,7 +63,7 @@ function run() {
             buildParser(args.parser),
             ...args.field.map(field),
             buildOutput(args.output),
-            formatJson(),
+            outputUnset(),
         ], args);
 
         debug('registering stdin');
