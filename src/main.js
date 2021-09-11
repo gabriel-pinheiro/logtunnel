@@ -19,9 +19,7 @@ const parseLogfmt = require('./transformers/parse-logfmt');
 const parseRegex = require('./transformers/parse-regex');
 const parseTable = require('./transformers/parse-table');
 const field = require('./transformers/field');
-const outputMustache = require('./transformers/output-mustache');
-const outputOriginal = require('./transformers/output-original');
-const outputUnset = require('./transformers/output-unset');
+const output = require('./transformers/output');
 
 const debug = require('debug')('logtunnel:main');
 
@@ -62,8 +60,7 @@ function run() {
             ...args.ignore.map(ignore),
             buildParser(args.parser),
             ...args.field.map(field),
-            buildOutput(args.output),
-            outputUnset(),
+            output(args.output),
         ], args);
 
         debug('registering stdin');
@@ -103,18 +100,6 @@ function buildParser(parser) {
     }
 
     return parseRegex(parser);
-}
-
-function buildOutput(output) {
-    if(!output) {
-        return null;
-    }
-
-    if(output.toLowerCase() === 'original') {
-        return outputOriginal();
-    }
-
-    return outputMustache(output);
 }
 
 run();
