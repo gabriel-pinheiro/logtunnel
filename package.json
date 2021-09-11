@@ -7,7 +7,7 @@
     "lt": "src/main.js"
   },
   "scripts": {
-    "test": "lab -v -m 4000 -I require -a @hapi/code"
+    "test": "lab -v -t 100 -I require -a @hapi/code"
   },
   "repository": {
     "type": "git",
