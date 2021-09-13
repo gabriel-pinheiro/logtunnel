@@ -43,6 +43,12 @@ describe('outputs', () => {
         expect(line).to.equal('[bar]');
     });
 
+    it('should allow js in mustache', () => {
+        const format = output('[{{ foo.toUpperCase() }}]');
+        const line = format({ foo: 'bar' });
+        expect(line).to.equal('[BAR]');
+    });
+
     it('should refuse to format unparsed lines', () => {
         expect(() => output('json')('foo')).to.throw();
         expect(() => output('logfmt')('foo')).to.throw();
