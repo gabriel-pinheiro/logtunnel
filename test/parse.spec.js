@@ -1,46 +1,46 @@
 const Lab = require('@hapi/lab');
 const Code = require('@hapi/code');
 
-const parse = require('../src/transformers/parse');
+const { parseFactory } = require('../src/transformers/parsers/factory');
 
 const { describe, it } = exports.lab = Lab.script();
 const { expect } = Code;
 
 describe('parsers', () => {
     it('should return null when no format is specified', () => {
-        expect(parse(void 0)).to.be.null();
+        expect(parseFactory(void 0)).to.be.null();
     });
 
     it('should parse json', () => {
-        const parser = parse('json');
-        expect(parser('{"foo": "bar"}')).to.equal({ foo: 'bar' });
+        const parser = parseFactory('json');
+        expect(parser.run('{"foo": "bar"}')).to.equal({ foo: 'bar' });
     });
 
     it('should ignore invalid json lines when parsing json', () => {
-        const parser = parse('json');
-        expect(parser('Oy')).to.be.false();
-        expect(parser('"Oy"')).to.be.false();
+        const parser = parseFactory('json');
+        expect(parser.run('Oy')).to.be.false();
+        expect(parser.run('"Oy"')).to.be.false();
     });
 
     it('should parse logfmt', () => {
-        const parser = parse('logfmt');
-        expect(parser('foo=bar')).to.equal({ foo: 'bar' });
+        const parser = parseFactory('logfmt');
+        expect(parser.run('foo=bar')).to.equal({ foo: 'bar' });
     });
 
     it('should ignore invalid logfmt lines when parsing logfmt', () => {
-        const parser = parse('logfmt');
-        expect(parser(void 0)).to.be.false();
+        const parser = parseFactory('logfmt');
+        expect(parser.run(void 0)).to.be.false();
     });
 
     it('should parse regex', () => {
-        const parser = parse('\\[(?<severity>\\S+)\\s*(?<delay>\\d+)ms\\] (?<message>.*)');
-        expect(parser('[info 20ms] lorem ipsum dolor')).to.equal({
+        const parser = parseFactory('\\[(?<severity>\\S+)\\s*(?<delay>\\d+)ms\\] (?<message>.*)');
+        expect(parser.run('[info 20ms] lorem ipsum dolor')).to.equal({
             severity: 'info',
             delay: '20',
             message: 'lorem ipsum dolor',
         });
 
-        expect(parser('foo')).to.be.false();
+        expect(parser.run('foo')).to.be.false();
     });
 
     describe('tables', () => {
@@ -52,21 +52,21 @@ describe('parsers', () => {
 
         it('should ignore headers', () => {
             const pipeline = { firstLine: null };
-            const parser = parse('table');
+            const parser = parseFactory('table');
             const line = tableRows[0];
-        
-            expect(parser(line, line, pipeline)).to.be.false();
+
+            expect(parser.run(line, line, pipeline)).to.be.false();
         });
 
         it('should parse subsequent rows', () => {
             const pipeline = { firstLine: tableRows[0] };
-            const parser = parse('table');
+            const parser = parseFactory('table');
             let line;
 
             line = tableRows[1];
-            expect(parser(line, line, pipeline)).to.equal({ NAME: 'foo', TYPE: 'bar' });
+            expect(parser.run(line, line, pipeline)).to.equal({ NAME: 'foo', TYPE: 'bar' });
             line = tableRows[2];
-            expect(parser(line, line, pipeline)).to.equal({ NAME: 'baz', TYPE: 'qux' });
+            expect(parser.run(line, line, pipeline)).to.equal({ NAME: 'baz', TYPE: 'qux' });
         });
     });
 });

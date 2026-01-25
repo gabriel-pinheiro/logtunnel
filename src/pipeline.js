@@ -1,18 +1,20 @@
 'use strict';
-const debug = require('debug')('logtunnel:pipeline');
 
-const filter = require('./transformers/filter');
-const ignore = require('./transformers/ignore');
-const parse = require('./transformers/parse');
-const field = require('./transformers/field');
-const output = require('./transformers/output');
+const { FieldFilter } = require('./transformers/filters/field');
+const { FindFilter } = require('./transformers/filters/find');
+const { IgnoreFilter } = require('./transformers/filters/ignore');
+const { outputFactory } = require('./transformers/outputs/factory');
+const { parseFactory } = require('./transformers/parsers/factory');
+
+const debug = require('debug')('logtunnel:pipeline');
 
 class LogPipeline {
     constructor(args, stdout) {
         this.firstLine = null;
         this.args = args;
         this.stdout = stdout;
-        this.transformers = this._buildTransformers().filter(t => t !== null);
+        this.transformers = this._buildTransformers()
+                .filter(t => t !== null);
     }
 
     onLogLine(line) {
@@ -33,7 +35,7 @@ class LogPipeline {
         let output = line;
 
         for (let transformer of this.transformers) {
-            const result = await transformer(output, line, this);
+            const result = await transformer.run(output, line, this);
 
             // Transformer accepted the line
             if(result === true) {
@@ -69,15 +71,15 @@ class LogPipeline {
     _buildTransformers() {
         return [
             // First of all, filter which lines to accept
-            this.args._ ? filter(this.args._) : null,
-            ...this.args.filter.map(filter),
-            ...this.args.ignore.map(ignore),
+            this.args._ ? new FindFilter(this.args._) : null,
+            ...this.args.filter.map(f => new FindFilter(f)),
+            ...this.args.ignore.map(i => new IgnoreFilter(i)),
             // Parse them...
-            parse(this.args.parser),
+            parseFactory(this.args.parser),
             // ...and apply field filters
-            ...this.args.field.map(field),
+            ...this.args.field.map(f => new FieldFilter(f)),
             // And finally format the output
-            output(this.args.output),
+            outputFactory(this.args.output),
         ];
     }
 }
