@@ -29,7 +29,7 @@ const definition = {
         type: 'string',
     },
     o: {
-        description: 'Formats the output using this template. Allowed: json, logfmt, original or a mustache template.',
+        description: 'Formats the output using this template. Allowed: json, logfmt, inspect, original, table or a bigodon template.',
         alias: 'output',
         type: 'string',
     },
@@ -65,6 +65,8 @@ const examples = [
     $ + 'curl -s https://cdn.codetunnel.net/lt/json.log | lt -p json -o \'[{{lvl}}] {{log}}\' -F \'log.toLowerCase().includes("alice")\'',
     'Parse logs as logfmt, show the ones with "delay > 200" and show their original line (as if no parsing happened)'.dim,
     $ + 'curl -s https://cdn.codetunnel.net/lt/logfmt.log | lt -p logfmt -o original -F \'delay > 200\'',
+    'Parse logs as JSON and output them as a table'.dim,
+    $ + 'curl -s https://cdn.codetunnel.net/lt/json.log | lt -p json -o table',
     'Parse logs with regex, and output in logfmt'.dim,
     $ + 'curl -s https://cdn.codetunnel.net/lt/text.log | lt -p \'\\[(?<lvl>\\S*) in\\s*(?<delay>\\d*)ms\\] (?<log>.*)\' -o logfmt',
     'Parse logs with regex, and show the ones with "delay > 200"'.dim,

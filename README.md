@@ -37,6 +37,9 @@ Parse logs as JSON, apply template and show the ones with "log" containing "Alic
 Parse logs as logfmt, show the ones with "delay > 200" and show their original line (as if no parsing happened):
 ``curl -s https://cdn.codetunnel.net/lt/logfmt.log | lt -p logfmt -o original -F 'delay > 200'``
 
+Parse logs as JSON and output them as a table:
+``curl -s https://cdn.codetunnel.net/lt/json.log | lt -p json -o table``
+
 Parse logs with regex, and output in logfmt:
 ``curl -s https://cdn.codetunnel.net/lt/text.log | lt -p '\[(?<lvl>\S*) in\s*(?<delay>\d*)ms\] (?<log>.*)' -o logfmt``
 

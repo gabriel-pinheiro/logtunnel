@@ -46,6 +46,35 @@ describe('outputs', () => {
         expect(line).to.equal('fubá');
     });
 
+    it('should format as table', () => {
+        const format = outputFactory('table');
+        format.run({ foo: 'bar', baz: 'qux' });
+        format.run({ foo: 'longer' });
+        const lines = format.flush();
+
+        expect(lines).to.equal([
+            'foo     baz',
+            'bar     qux',
+            'longer',
+        ]);
+    });
+
+    it('should return empty table output when no rows were provided', () => {
+        const format = outputFactory('table');
+        expect(format.flush()).to.equal([]);
+    });
+
+    it('should stringify object and null table cells', () => {
+        const format = outputFactory('table');
+        format.run({ foo: null, bar: { baz: 1 } });
+        const lines = format.flush();
+
+        expect(lines).to.equal([
+            'foo  bar',
+            '     {"baz":1}',
+        ]);
+    });
+
     it('should format with bigodon', async () => {
         const format = outputFactory('[{{foo}}]');
         const line = await format.run({ foo: 'bar' });
@@ -61,6 +90,7 @@ describe('outputs', () => {
     it('should refuse to format unparsed lines', async () => {
         expect(() => outputFactory('json').run('foo')).to.throw();
         expect(() => outputFactory('logfmt').run('foo')).to.throw();
+        expect(() => outputFactory('table').run('foo')).to.throw();
         await expect(outputFactory('{{foo}}').run('foo')).to.reject();
     });
 });

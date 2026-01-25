@@ -75,6 +75,24 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
+    it('should buffer and format tables when requested', async () => {
+        const args = [
+            p('logfmt'),
+            o('table'),
+        ];
+        const actual = await runPipeline([
+            'foo=bar baz=qux',
+            'foo=longer',
+        ], args);
+        const expected = [
+            'foo     baz',
+            'bar     qux',
+            'longer',
+        ];
+
+        expect(actual).to.equal(expected);
+    });
+
     it('should filter by the original line even when parsers and outputs are provided', async () => {
         const args = [
             p('logfmt'),
@@ -132,6 +150,26 @@ describe('pipeline', () => {
         const args = [
             p('table'),
             o('original'),
+            F('eq NAME "foo"'),
+            H(),
+        ];
+        const actual = await runPipeline([
+            'NAME',
+            'foo',
+            'bar',
+        ], args);
+        const expected = [
+            'NAME',
+            'foo',
+        ];
+
+        expect(actual).to.equal(expected);
+    });
+
+    it('should log headers only once when both -H and -o table is provided', async () => {
+        const args = [
+            p('table'),
+            o('table'),
             F('eq NAME "foo"'),
             H(),
         ];

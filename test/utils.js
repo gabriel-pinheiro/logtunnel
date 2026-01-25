@@ -38,10 +38,11 @@ async function runPipeline(inputLines, args) {
     const pipeline = new LogPipeline(mergeArgs(args), stdout);
 
     inputLines.forEach(line => pipeline.onLogLine(line));
-    pipeline.onEnd();
 
     // Waiting for nextTick promises to resolve
     await Hoek.wait(0);
+
+    pipeline.onEnd();
 
     // Removing \n from the end of each line
     return lines.map(line => line.slice(0, -1));
