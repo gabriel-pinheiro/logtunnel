@@ -60,27 +60,27 @@ describe('filters', () => {
         });
     });
     describe('--field', () => {
-        it('should error when strings wasn\'t parsed into object', () => {
+        it('should error when strings wasn\'t parsed into object', async () => {
             const transformer = field('a');
-            expect(() => transformer('a')).to.throw();
+            expect(transformer('a')).to.reject();
         });
 
-        it('should compare equality', () => {
-            const transformer = field('foo == "bar"');
-            expect(transformer({ foo: 'bar' })).to.be.true();
-            expect(transformer({ foo: 'baz' })).to.be.false();
+        it('should compare equality', async () => {
+            const transformer = field('eq foo "bar"');
+            expect(await transformer({ foo: 'bar' })).to.be.true();
+            expect(await transformer({ foo: 'baz' })).to.be.false();
         });
 
-        it('should compare inequality with strings', () => {
-            const transformer = field('foo >= 3');
-            expect(transformer({ foo: '3' })).to.be.true();
-            expect(transformer({ foo: '2' })).to.be.false();
+        it('should compare inequality with strings', async () => {
+            const transformer = field('gte foo 3');
+            expect(await transformer({ foo: '3' })).to.be.true();
+            expect(await transformer({ foo: '2' })).to.be.false();
         });
 
-        it('should accept javascript', () => {
-            const transformer = field('foo.toLowerCase().includes("bar")');
-            expect(transformer({ foo: 'ABARA' })).to.be.true();
-            expect(transformer({ foo: 'ABADA' })).to.be.false();
+        it('should accept javascript', async () => {
+            const transformer = field('includes (lower foo) "bar"');
+            expect(await transformer({ foo: 'ABARA' })).to.be.true();
+            expect(await transformer({ foo: 'ABADA' })).to.be.false();
         });
     });
 });

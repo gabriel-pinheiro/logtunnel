@@ -29,11 +29,11 @@ class LogPipeline {
         }
     }
 
-    _logLine(line) {
+    async _logLine(line) {
         let output = line;
 
         for (let transformer of this.transformers) {
-            const result = transformer(output, line, this);
+            const result = await transformer(output, line, this);
 
             // Transformer accepted the line
             if(result === true) {
@@ -49,7 +49,7 @@ class LogPipeline {
 
             // Transformer modified the line
             output = result;
-            debug('line transformed: ' + JSON.stringify(output)); 
+            debug('line transformed: ' + JSON.stringify(output));
         }
 
         this.stdout.write(output + '\n');

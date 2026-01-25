@@ -31,13 +31,16 @@ function slowPod(...strs) {
     return emitter;
 }
 
-function runPipeline(inputLines, args) {
+async function runPipeline(inputLines, args) {
     const lines = [];
 
     const stdout = { write: (line) => lines.push(line) };
     const pipeline = new LogPipeline(mergeArgs(args), stdout);
 
     inputLines.forEach(line => pipeline.onLogLine(line));
+
+    // Waiting for nextTick promises to resolve
+    await Hoek.wait(0);
 
     // Removing \n from the end of each line
     return lines.map(line => line.slice(0, -1));

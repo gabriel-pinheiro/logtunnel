@@ -6,11 +6,11 @@ const { describe, it } = exports.lab = Lab.script();
 const { expect } = Code;
 
 describe('pipeline', () => {
-    it('should remove rejected lines and keep accepted ones', () => {
+    it('should remove rejected lines and keep accepted ones', async () => {
         const args = [
             f('potato')
         ];
-        const actual = runPipeline([
+        const actual = await runPipeline([
             'yada yada yada',
             'lorem ipsum POTATO dolor',
             'ablueblue POTATO',
@@ -24,13 +24,13 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
-    it('should apply multiple filters', () => {
+    it('should apply multiple filters', async () => {
         const args = [
             f('foo'),
             f('bar'),
             i('nope'),
         ];
-        const actual = runPipeline([
+        const actual = await runPipeline([
             '1. foo',
             '2. foo bar nope',
             '3. foo bar',
@@ -43,12 +43,12 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
-    it('should apply default argument as filter', () => {
+    it('should apply default argument as filter', async () => {
         const args = [
             _('foo'),
             i('bar'),
         ];
-        const actual = runPipeline([
+        const actual = await runPipeline([
             '1. foo',
             '2. foo bar',
             '3. baz',
@@ -60,12 +60,12 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
-    it('should parse and format correctly', () => {
+    it('should parse and format correctly', async () => {
         const args = [
             p('logfmt'),
             o('json'),
         ];
-        const actual = runPipeline([
+        const actual = await runPipeline([
             'foo=bar baz=qux',
         ], args);
         const expected = [
@@ -75,13 +75,13 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
-    it('should filter by the original line even when parsers and outputs are provided', () => {
+    it('should filter by the original line even when parsers and outputs are provided', async () => {
         const args = [
             p('logfmt'),
             o('json'),
             i('o=n'),
         ];
-        const actual = runPipeline([
+        const actual = await runPipeline([
             'foo=bar baz=qux',
             'foo=nope baz=qux',
         ], args);
@@ -92,13 +92,13 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
-    it('should apply field filters after parse', () => {
+    it('should apply field filters after parse', async () => {
         const args = [
             p('logfmt'),
             o('json'),
-            F('foo.startsWith("b")'),
+            F('startsWith foo "b"'),
         ];
-        const actual = runPipeline([
+        const actual = await runPipeline([
             'foo=bar baz=qux',
             'foo=nope baz=qux',
         ], args);
@@ -109,14 +109,14 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
-    it('should apply multiple field filters', () => {
+    it('should apply multiple field filters', async () => {
         const args = [
             p('logfmt'),
             o('json'),
-            F('foo.startsWith("b")'),
-            F('foo.endsWith("r")'),
+            F('startsWith foo "b"'),
+            F('endsWith foo "r"'),
         ];
-        const actual = runPipeline([
+        const actual = await runPipeline([
             'foo=baz baz=qux',
             'foo=bar baz=qux',
             'foo=tar baz=qux',
@@ -128,14 +128,14 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
-    it('should log headers when -H is provided', () => {
+    it('should log headers when -H is provided', async () => {
         const args = [
             p('table'),
             o('original'),
-            F('NAME === "foo"'),
+            F('eq NAME "foo"'),
             H(),
         ];
-        const actual = runPipeline([
+        const actual = await runPipeline([
             'NAME',
             'foo',
             'bar',

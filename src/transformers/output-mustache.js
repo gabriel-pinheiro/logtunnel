@@ -1,4 +1,4 @@
-const { compile } = require('jstache');
+const { compile } = require('bigodon');
 
 module.exports = format => {
     const template = compile(format);
