@@ -7,7 +7,7 @@ module.exports.logSource = emitter => {
     emitter.on('data', data => {
         const lines = data.toString()
             .split(/[\r\n|\n]/);
-    
+
         lines[0] = incompleteLine + lines[0];
         incompleteLine = lines.pop(); // Either an incomplete line or an empty string due to the last \n
 

@@ -38,6 +38,7 @@ async function runPipeline(inputLines, args) {
     const pipeline = new LogPipeline(mergeArgs(args), stdout);
 
     inputLines.forEach(line => pipeline.onLogLine(line));
+    pipeline.onEnd();
 
     // Waiting for nextTick promises to resolve
     await Hoek.wait(0);

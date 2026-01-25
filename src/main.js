@@ -32,7 +32,9 @@ function run() {
         debug('building pipeline');
         const pipeline = new LogPipeline(args, process.stdout);
         debug('registering stdin');
-        logSource(process.stdin).on('log-line', l => pipeline.onLogLine(l));
+        logSource(process.stdin)
+            .on('log-line', l => pipeline.onLogLine(l))
+            .on('end', () => pipeline.onEnd());
     } catch(e) {
         console.error('Error:', e.message);
         process.exit(1);

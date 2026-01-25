@@ -13,6 +13,8 @@ class LogPipeline {
         this.firstLine = null;
         this.args = args;
         this.stdout = stdout;
+        this.outputTransformer = outputFactory(this.args.output);
+        this.isOutputBuffered = Boolean(this.outputTransformer.flush);
         this.transformers = this._buildTransformers()
                 .filter(t => t !== null);
     }
@@ -54,6 +56,10 @@ class LogPipeline {
             debug('line transformed: ' + JSON.stringify(output));
         }
 
+        if (this.isOutputBuffered) {
+            return;
+        }
+
         this.stdout.write(output + '\n');
     }
 
@@ -63,9 +69,18 @@ class LogPipeline {
         }
 
         this.firstLine = line;
-        if(this.args.headers) {
+        if(this.args.headers && !this.isOutputBuffered) {
             this.stdout.write(this.firstLine + '\n');
         }
+    }
+
+    onEnd() {
+        if (!this.isOutputBuffered) {
+            return;
+        }
+
+        const lines = this.outputTransformer.flush();
+        lines.forEach(line => this.stdout.write(line + '\n'));
     }
 
     _buildTransformers() {
@@ -79,7 +94,7 @@ class LogPipeline {
             // ...and apply field filters
             ...this.args.field.map(f => new FieldFilter(f)),
             // And finally format the output
-            outputFactory(this.args.output),
+            this.outputTransformer,
         ];
     }
 }
