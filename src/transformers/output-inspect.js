@@ -13,6 +13,6 @@ module.exports = (breakLines = false) => {
             return true;
         }
 
-        return util.inspect(line, options);
+        return util.inspect({ ...line }, options);
     };
 };

@@ -147,4 +147,15 @@ describe('pipeline', () => {
 
         expect(actual).to.equal(expected);
     });
+
+    it('should not specify null prototype of regex parser', async () => {
+        const args = [
+            p('(?<num>\\d*)'),
+        ];
+        const [actual] = await runPipeline([
+            '12',
+        ], args);
+
+        expect(actual).not.to.include('null prototype');
+    });
 });
