@@ -2,11 +2,12 @@ const json = require('./output-json');
 const logfmt = require('./output-logfmt');
 const mustache = require('./output-mustache');
 const original = require('./output-original');
-const unset = require('./output-unset');
+const inspect = require('./output-inspect');
 
 module.exports = format => {
     switch(format?.toLowerCase()) {
-        case     void 0: return unset();
+        case  undefined: return inspect(false);
+        case  'inspect': return inspect(true);
         case     'json': return json();
         case   'logfmt': return logfmt();
         case 'original': return original();
