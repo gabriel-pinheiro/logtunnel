@@ -1,4 +1,4 @@
-module.exports = regexStr => line => {
+module.exports = regexStr => {
     const regex = new RegExp(regexStr, 'i');
-    return regex.test(line);
+    return line => regex.test(line);
 };
