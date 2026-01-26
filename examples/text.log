@@ -1,5 +1,15 @@
-[INFO in 120ms] Registered user Alice
-[INFO in  70ms] Bob logged out
-[WARN in 710ms] Alice tried to purchase with insufficient funds
-[INFO in 230ms] Alice added funds to their account
-[INFO in 150ms] Claire logged in
+2026-01-25T19:16:01.120Z [INFO] gateway GET /healthz 200
+2026-01-25T19:16:03.442Z [INFO] auth user=alice@example.com action=login
+2026-01-25T19:16:05.007Z [INFO] catalog resolved sku=sku_hoodie name="Codetunnel Hoodie"
+2026-01-25T19:16:06.211Z [INFO] checkout cart created user=alice@example.com cart_id=cart_7c1
+2026-01-25T19:16:08.602Z [WARN] payments provider=stripe timeout during authorize (retrying in 500ms) user=alice@example.com
+2026-01-25T19:16:09.388Z [INFO] payments authorize ok user=alice@example.com
+2026-01-25T19:16:10.104Z [INFO] checkout order placed user=alice@example.com order_id=ord_9f2 total=49.00
+2026-01-25T19:16:12.955Z [INFO] email sent receipt user=alice@example.com
+2026-01-25T19:16:18.331Z [INFO] gateway GET /metrics 200
+2026-01-25T19:16:20.010Z [ERROR] checkout NullPointerException: price is null (cart_id=cart_91a user=bob@example.com)
+2026-01-25T19:16:21.244Z [INFO] checkout Retrying in 500ms after pricing error (cart_id=cart_91a user=bob@example.com)
+2026-01-25T19:16:22.019Z [INFO] checkout recovered from transient pricing error (cart_id=cart_91a user=bob@example.com)
+2026-01-25T19:16:28.601Z [WARN] payments charge declined reason=insufficient_funds user=bob@example.com
+2026-01-25T19:16:31.900Z [INFO] payments user updated payment method user=bob@example.com
+2026-01-25T19:16:35.114Z [INFO] checkout order placed user=bob@example.com order_id=ord_b4c total=38.00
