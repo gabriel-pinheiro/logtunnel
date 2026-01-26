@@ -4,7 +4,7 @@ const Code = require('@hapi/code');
 const { FindFilter } = require('../src/transformers/filters/find');
 const { IgnoreFilter } = require('../src/transformers/filters/ignore');
 const { FieldFilter } = require('../src/transformers/filters/field');
-const { PickFilter } = require('../src/transformers/filters/pick');
+const { SelectFilter } = require('../src/transformers/filters/select');
 
 const { describe, it } = exports.lab = Lab.script();
 const { expect } = Code;
@@ -85,34 +85,65 @@ describe('filters', () => {
         });
     });
 
-    describe('--pick', () => {
+    describe('--select', () => {
         it('should error when strings weren\'t parsed into object', async () => {
-            const transformer = new PickFilter('foo');
+            const transformer = new SelectFilter('foo');
             expect(transformer.run('a')).to.reject();
         });
 
-        it('should pick only selected field (1 field)', async () => {
-            const transformer = new PickFilter('foo');
+        it('should select only selected field (1 field)', async () => {
+            const transformer = new SelectFilter('foo');
             const result = await transformer.run({ foo: 'bar', baz: 'qux', extra: 'nope' });
             expect(result).to.equal({ foo: 'bar' });
         });
 
-        it('should pick only selected fields (2 fields)', async () => {
-            const transformer = new PickFilter('foo,baz');
+        it('should select only selected fields (2 fields)', async () => {
+            const transformer = new SelectFilter('foo,baz');
             const result = await transformer.run({ foo: 'bar', baz: 'qux', extra: 'nope' });
             expect(result).to.equal({ foo: 'bar', baz: 'qux' });
         });
 
         it('should not break with undefined fields', async () => {
-            const transformer = new PickFilter('foo,bar');
+            const transformer = new SelectFilter('foo,bar');
             const result = await transformer.run({ foo: 'bar', baz: 'qux', extra: 'nope' });
             expect(result).to.equal({ foo: 'bar' });
         });
 
         it('should include falsy values', async () => {
-            const transformer = new PickFilter('foo,baz');
+            const transformer = new SelectFilter('foo,baz');
             const result = await transformer.run({ foo: 0, baz: null, extra: 'nope' });
             expect(result).to.equal({ foo: 0, baz: null });
+        });
+    });
+
+    describe('--exclude', () => {
+        it('should error when strings weren\'t parsed into object', async () => {
+            const transformer = new SelectFilter('foo', true);
+            expect(transformer.run('a')).to.reject();
+        });
+
+        it('should exclude selected fields', async () => {
+            const transformer = new SelectFilter('foo,baz', true);
+            const result = await transformer.run({ foo: 'bar', baz: 'qux', extra: 'nope' });
+            expect(result).to.equal({ extra: 'nope' });
+        });
+
+        it('should exclude unknown field', async () => {
+            const transformer = new SelectFilter('extra', true);
+            const result = await transformer.run({ foo: 'bar', baz: 'qux' });
+            expect(result).to.equal({ foo: 'bar', baz: 'qux' });
+        });
+
+        it('should allow to exclude all fields', async () => {
+            const transformer = new SelectFilter('foo,baz', true);
+            const result = await transformer.run({ foo: 'bar', baz: 'qux' });
+            expect(result).to.equal({});
+        });
+
+        it('should keep falsy values when not excluded', async () => {
+            const transformer = new SelectFilter('foo', true);
+            const result = await transformer.run({ foo: 0, baz: null, extra: 'nope' });
+            expect(result).to.equal({ baz: null, extra: 'nope' });
         });
     });
 });

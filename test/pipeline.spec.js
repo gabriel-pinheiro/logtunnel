@@ -1,6 +1,6 @@
 const Lab = require('@hapi/lab');
 const Code = require('@hapi/code');
-const { runPipeline, _, f, i, F, P, p, o, H, k } = require('./utils');
+const { runPipeline, _, f, i, F, s, x, p, o, H, k } = require('./utils');
 
 const { describe, it } = exports.lab = Lab.script();
 const { expect } = Code;
@@ -146,11 +146,27 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
-    it('should pick columns before formatting', async () => {
+    it('should select columns before formatting', async () => {
         const args = [
             p('logfmt'),
             o('json'),
-            P('foo,baz'),
+            s('foo,baz'),
+        ];
+        const actual = await runPipeline([
+            'foo=bar baz=qux extra=nope',
+        ], args);
+        const expected = [
+            '{"foo":"bar","baz":"qux"}',
+        ];
+
+        expect(actual).to.equal(expected);
+    });
+
+    it('should exclude columns before formatting', async () => {
+        const args = [
+            p('logfmt'),
+            o('json'),
+            x('extra'),
         ];
         const actual = await runPipeline([
             'foo=bar baz=qux extra=nope',

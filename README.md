@@ -218,18 +218,28 @@ Convert `kubectl` table output to logfmt for easier downstream filtering:
 curl -s https://cdn.codetunnel.net/lt/table.log | lt -p table -o logfmt
 ```
 
-### Pick columns (`-P`)
+### Select and exclude columns
 
-Pick specific columns to be displayed after parsing (works with any parser):
+Select specific columns to be displayed after parsing (works with any parser):
 
 List kubernetes pods and show only the specified columns:
 ```bash
-cat ./examples/table.log | lt -p table -P NAME,STATUS,AGE -o table
+cat ./examples/table.log | lt -k -s NAME,STATUS,AGE
 ```
 
 Find logs containing "error", parse as JSON and keep just the specified columns:
 ```bash
-curl -s https://cdn.codetunnel.net/lt/text.log | lt -f error -p json -P ts,level,message -o json
+curl -s https://cdn.codetunnel.net/lt/text.log | lt -f error -p json -s ts,level,message
+
+Hide noisy columns from kubectl tables:
+```bash
+cat ./examples/table.log | lt -k -x READY,RESTARTS
+```
+
+Remove extra fields from JSON logs:
+```bash
+curl -s https://cdn.codetunnel.net/lt/text.log | lt -p json -x pid,thread,trace_id
+```
 ```
 
 ### Custom regex parsing (`-p '(?<name>...)'`)
@@ -258,6 +268,8 @@ curl -s https://cdn.codetunnel.net/lt/text.log | lt -p '(?<delay_ms>\d+)ms' -F '
 - `-o, --output <format|template>`: output `json|logfmt|inspect|original|table` or a Bigodon template
 - `-H, --headers`: always output the first input line (table headers)
 - `-k, --kubectl`: shortcut for `-p table -o table`
+- `-s, --select <columns>`: select columns from parsed objects
+- `-x, --exclude <columns>`: exclude columns from parsed objects
 - `-h, --help`: show help
 - `-v, --version`: show version
 

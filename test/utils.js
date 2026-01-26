@@ -64,10 +64,11 @@ const _ = str => ({ _: str });
 const f = str => ({ filter: [str] });
 const i = str => ({ ignore: [str] });
 const F = str => ({ field: [str] });
-const P = str => ({ pick: str });
+const s = str => ({ select: str });
+const x = str => ({ exclude: str });
 const p = str => ({ parser: str });
 const o = str => ({ output: str });
 const H = () => ({ headers: true });
 const k = () => ({ kubectl: true });
 
-module.exports = { pod, slowPod, runPipeline, _, f, i, F, P, p, o, H, k };
+module.exports = { pod, slowPod, runPipeline, _, f, i, F, s, x, p, o, H, k };

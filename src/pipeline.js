@@ -3,7 +3,7 @@
 const { FieldFilter } = require('./transformers/filters/field');
 const { FindFilter } = require('./transformers/filters/find');
 const { IgnoreFilter } = require('./transformers/filters/ignore');
-const { PickFilter } = require('./transformers/filters/pick');
+const { SelectFilter } = require('./transformers/filters/select');
 const { outputFactory } = require('./transformers/outputs/factory');
 const { parseFactory } = require('./transformers/parsers/factory');
 
@@ -99,8 +99,9 @@ class LogPipeline {
             parseFactory(this.args.parser),
             // ...and apply field filters
             ...this.args.field.map(f => new FieldFilter(f)),
-            // ...optionally pick specific columns
-            this.args.pick ? new PickFilter(this.args.pick) : null,
+            // ...optionally select/exclude specific columns
+            this.args.select ? new SelectFilter(this.args.select, false) : null,
+            this.args.exclude ? new SelectFilter(this.args.exclude, true) : null,
             // And finally format the output
             this.outputTransformer,
         ];
