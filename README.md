@@ -243,6 +243,7 @@ curl -s https://cdn.codetunnel.net/lt/text.log | lt -p '(?<delay_ms>\d+)ms' -F '
 - `-F, --field <bigodon expression>`: filter parsed objects by expression (repeatable)
 - `-o, --output <format|template>`: output `json|logfmt|inspect|original|table` or a Bigodon template
 - `-H, --headers`: always output the first input line (table headers)
+- `-k, --kubectl`: shortcut for `-p table -o table`
 - `-h, --help`: show help
 - `-v, --version`: show version
 

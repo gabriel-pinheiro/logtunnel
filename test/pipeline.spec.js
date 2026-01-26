@@ -1,6 +1,6 @@
 const Lab = require('@hapi/lab');
 const Code = require('@hapi/code');
-const { runPipeline, _, f, i, F, p, o, H } = require('./utils');
+const { runPipeline, _, f, i, F, p, o, H, k } = require('./utils');
 
 const { describe, it } = exports.lab = Lab.script();
 const { expect } = Code;
@@ -195,5 +195,23 @@ describe('pipeline', () => {
         ], args);
 
         expect(actual).not.to.include('null prototype');
+    });
+
+    it('should parse and format kubectl tables with -k', async () => {
+        const args = [
+            k(),
+        ];
+        const actual = await runPipeline([
+            'NAME AGE',
+            'foo 1',
+            'bar 22',
+        ], args);
+        const expected = [
+            'NAME  AGE',
+            'foo   1',
+            'bar   22',
+        ];
+
+        expect(actual).to.equal(expected);
     });
 });

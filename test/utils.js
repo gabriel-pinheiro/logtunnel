@@ -67,5 +67,6 @@ const F = str => ({ field: [str] });
 const p = str => ({ parser: str });
 const o = str => ({ output: str });
 const H = () => ({ headers: true });
+const k = () => ({ kubectl: true });
 
-module.exports = { pod, slowPod, runPipeline, _, f, i, F, p, o, H };
+module.exports = { pod, slowPod, runPipeline, _, f, i, F, p, o, H, k };

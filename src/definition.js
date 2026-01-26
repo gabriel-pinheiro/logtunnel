@@ -44,6 +44,11 @@ const definition = {
         alias: 'headers',
         type: 'boolean',
     },
+    k: {
+        description: 'Shortcut for kubectl tables (equivalent to -p table -o table).',
+        alias: 'kubectl',
+        type: 'boolean',
+    },
 };
 
 const $ = '$ '.gray;

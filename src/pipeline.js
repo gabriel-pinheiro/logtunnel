@@ -11,7 +11,7 @@ const debug = require('debug')('logtunnel:pipeline');
 class LogPipeline {
     constructor(args, stdout) {
         this.firstLine = null;
-        this.args = args;
+        this.args = this._normalizeArgs(args);
         this.stdout = stdout;
         this.outputTransformer = outputFactory(this.args.output);
         this.isOutputBuffered = Boolean(this.outputTransformer.flush);
@@ -96,6 +96,17 @@ class LogPipeline {
             // And finally format the output
             this.outputTransformer,
         ];
+    }
+
+    _normalizeArgs(args) {
+        const normalized = { ...args };
+
+        if (normalized.kubectl) {
+            normalized.parser = 'table';
+            normalized.output = 'table';
+        }
+
+        return normalized;
     }
 }
 
