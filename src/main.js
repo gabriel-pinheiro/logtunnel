@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const semver = require('semver');
-if(!semver.satisfies(process.version, '>=12')) {
-    console.error(`Your NodeJS version (${process.version}) is too old for logtunnel :(\nUse at least NodeJS 12`);
+if(!semver.satisfies(process.version, '>=16')) {
+    console.error(`Your NodeJS version (${process.version}) is too old for logtunnel :(\nUse at least NodeJS 16`);
     process.exit(1);
 }
 
