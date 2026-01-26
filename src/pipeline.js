@@ -21,17 +21,16 @@ class LogPipeline {
     }
 
     onLogLine(line) {
-        try {
-            debug('got line: ' + line)
-            const isFirstLine = this._updateFirstLine(line);
-            this._logLine(line, isFirstLine);
-        } catch (e) {
-            // Covering this would kill the process
-            /* $lab:coverage:off$ */
-            console.error('Error:', e.message);
-            process.exit(1);
-            /* $lab:coverage:on$ */
-        }
+        debug('got line: ' + line)
+        const isFirstLine = this._updateFirstLine(line);
+        this._logLine(line, isFirstLine)
+            .catch(error => {
+                // Covering this would kill the process
+                /* $lab:coverage:off$ */
+                console.error('Error:', error.message);
+                process.exit(1);
+                /* $lab:coverage:on$ */
+            });
     }
 
     async _logLine(line, isFirstLine) {
