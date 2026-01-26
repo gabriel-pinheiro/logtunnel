@@ -218,6 +218,20 @@ Convert `kubectl` table output to logfmt for easier downstream filtering:
 curl -s https://cdn.codetunnel.net/lt/table.log | lt -p table -o logfmt
 ```
 
+### Pick columns (`-P`)
+
+Pick specific columns to be displayed after parsing (works with any parser):
+
+List kubernetes pods and show only the specified columns:
+```bash
+cat ./examples/table.log | lt -p table -P NAME,STATUS,AGE -o table
+```
+
+Find logs containing "error", parse as JSON and keep just the specified columns:
+```bash
+curl -s https://cdn.codetunnel.net/lt/text.log | lt -f error -p json -P ts,level,message -o json
+```
+
 ### Custom regex parsing (`-p '(?<name>...)'`)
 
 Use a regex with named groups to “extract fields” from unstructured text:

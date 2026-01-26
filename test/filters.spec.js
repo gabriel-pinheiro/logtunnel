@@ -4,6 +4,7 @@ const Code = require('@hapi/code');
 const { FindFilter } = require('../src/transformers/filters/find');
 const { IgnoreFilter } = require('../src/transformers/filters/ignore');
 const { FieldFilter } = require('../src/transformers/filters/field');
+const { PickFilter } = require('../src/transformers/filters/pick');
 
 const { describe, it } = exports.lab = Lab.script();
 const { expect } = Code;
@@ -81,6 +82,37 @@ describe('filters', () => {
             const transformer = new FieldFilter('includes (lower foo) "bar"');
             expect(await transformer.run({ foo: 'ABARA' })).to.be.true();
             expect(await transformer.run({ foo: 'ABADA' })).to.be.false();
+        });
+    });
+
+    describe('--pick', () => {
+        it('should error when strings weren\'t parsed into object', async () => {
+            const transformer = new PickFilter('foo');
+            expect(transformer.run('a')).to.reject();
+        });
+
+        it('should pick only selected field (1 field)', async () => {
+            const transformer = new PickFilter('foo');
+            const result = await transformer.run({ foo: 'bar', baz: 'qux', extra: 'nope' });
+            expect(result).to.equal({ foo: 'bar' });
+        });
+
+        it('should pick only selected fields (2 fields)', async () => {
+            const transformer = new PickFilter('foo,baz');
+            const result = await transformer.run({ foo: 'bar', baz: 'qux', extra: 'nope' });
+            expect(result).to.equal({ foo: 'bar', baz: 'qux' });
+        });
+
+        it('should not break with undefined fields', async () => {
+            const transformer = new PickFilter('foo,bar');
+            const result = await transformer.run({ foo: 'bar', baz: 'qux', extra: 'nope' });
+            expect(result).to.equal({ foo: 'bar' });
+        });
+
+        it('should include falsy values', async () => {
+            const transformer = new PickFilter('foo,baz');
+            const result = await transformer.run({ foo: 0, baz: null, extra: 'nope' });
+            expect(result).to.equal({ foo: 0, baz: null });
         });
     });
 });

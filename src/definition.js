@@ -49,6 +49,11 @@ const definition = {
         alias: 'kubectl',
         type: 'boolean',
     },
+    P: {
+        description: 'Pick only these columns from parsed objects (comma-separated). Requires a parser like -p json.',
+        alias: 'pick',
+        type: 'string',
+    },
 };
 
 const $ = '$ '.gray;
@@ -76,6 +81,8 @@ const examples = [
     $ + 'curl -s https://cdn.codetunnel.net/lt/table.log | lt -H gateway',
     'Kubernetes tables: -k is shorthand for -p table -o table:'.dim,
     $ + 'curl -s https://cdn.codetunnel.net/lt/table.log | lt -k payment',
+    'Kubernetes tables: pick columns (NAME, STATUS, AGE):'.dim,
+    $ + 'cat ./examples/table.log | lt -p table -P NAME,STATUS,AGE -o table',
     'Kubernetes tables: show pods that are not fully ready:'.dim,
     $ + 'curl -s https://cdn.codetunnel.net/lt/table.log | lt -k -F \'lt (itemAt (split READY "/") 0) (itemAt (split READY "/") 1)\'',
     'Custom regex parsing (extract fields) and output as logfmt:'.dim,
