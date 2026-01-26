@@ -3,13 +3,14 @@ class TableParse {
         this.headers = null;
     }
 
-    run(line, _original, pipeline) {
-        if (!pipeline.firstLine) {
+    run(line, _original, firstLine) {
+        if (!firstLine) {
             // Ignore first line, it's the headers
+            this.headers = this._splitColumns(line);
             return false;
         }
         if (!this.headers) {
-            this.headers = this._splitColumns(pipeline.firstLine);
+            this.headers = this._splitColumns(firstLine);
         }
 
         const columns = this._splitColumns(line);

@@ -186,6 +186,25 @@ describe('pipeline', () => {
         expect(actual).to.equal(expected);
     });
 
+    it('should not duplicate headers when parsing and reformatting tables with ignore filters', async () => {
+        const args = [
+            p('table'),
+            o('table'),
+            i('kube'),
+        ];
+        const actual = await runPipeline([
+            'NAMESPACE NAME',
+            'kube-system coredns',
+            'default api',
+        ], args);
+        const expected = [
+            'NAMESPACE  NAME',
+            'default    api',
+        ];
+
+        expect(actual).to.equal(expected);
+    });
+
     it('should not specify null prototype of regex parser', async () => {
         const args = [
             p('(?<num>\\d*)'),

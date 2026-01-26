@@ -22,8 +22,8 @@ class LogPipeline {
     onLogLine(line) {
         try {
             debug('got line: ' + line)
-            this._logLine(line);
-            this._updateFirstLine(line);
+            const isFirstLine = this._updateFirstLine(line);
+            this._logLine(line, isFirstLine);
         } catch (e) {
             // Covering this would kill the process
             /* $lab:coverage:off$ */
@@ -33,11 +33,15 @@ class LogPipeline {
         }
     }
 
-    async _logLine(line) {
+    async _logLine(line, isFirstLine) {
         let output = line;
 
         for (let transformer of this.transformers) {
-            const result = await transformer.run(output, line, this);
+            const result = await transformer.run(
+                output,
+                line,
+                isFirstLine ? null : this.firstLine,
+            );
 
             // Transformer accepted the line
             if(result === true) {
@@ -65,13 +69,15 @@ class LogPipeline {
 
     _updateFirstLine(line) {
         if (this.firstLine) {
-            return;
+            return false;
         }
 
         this.firstLine = line;
         if(this.args.headers && !this.isOutputBuffered) {
             this.stdout.write(this.firstLine + '\n');
         }
+
+        return true;
     }
 
     onEnd() {

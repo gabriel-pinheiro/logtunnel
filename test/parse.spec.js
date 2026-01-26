@@ -51,22 +51,20 @@ describe('parsers', () => {
         ];
 
         it('should ignore headers', () => {
-            const pipeline = { firstLine: null };
             const parser = parseFactory('table');
             const line = tableRows[0];
 
-            expect(parser.run(line, line, pipeline)).to.be.false();
+            expect(parser.run(line, line, null)).to.be.false();
         });
 
         it('should parse subsequent rows', () => {
-            const pipeline = { firstLine: tableRows[0] };
             const parser = parseFactory('table');
             let line;
 
             line = tableRows[1];
-            expect(parser.run(line, line, pipeline)).to.equal({ NAME: 'foo', TYPE: 'bar' });
+            expect(parser.run(line, line, tableRows[0])).to.equal({ NAME: 'foo', TYPE: 'bar' });
             line = tableRows[2];
-            expect(parser.run(line, line, pipeline)).to.equal({ NAME: 'baz', TYPE: 'qux' });
+            expect(parser.run(line, line, tableRows[0])).to.equal({ NAME: 'baz', TYPE: 'qux' });
         });
     });
 });
